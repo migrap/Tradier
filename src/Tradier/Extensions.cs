@@ -21,11 +21,8 @@ namespace Tradier {
 
         internal static bool IsNotNullOrEmpty(this string source) {
             return !string.IsNullOrEmpty(source);
-        }
+        }       
         
-        internal static Task<SecurityCollection> ReadAsAsync(this HttpContent content, Func<HttpContent, Func<Task<SecurityCollection>>> callback) {
-            return callback(content)();
-        }
 
         internal static string Add(this PathString path, object value) {
             var parameters = value.GetType().GetProperties().ToDictionary(x => x.Name, x => x.GetValue(value)?.ToString())

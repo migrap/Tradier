@@ -41,14 +41,37 @@ namespace Tradier {
                 types = types
             });
 
-            var response = await feature.Client.HttpClient.GetAsync(path);
+            var response = await feature.Client.GetAsync(path);
             
             return await response.Content.ReadAsAsync(x => x.Securities);
         }
+
+        public static async Task<string> CalendarAsync(this IMarketsFeature feature, DateTimeOffset? datetime = null) {
+            var path = new PathString("/v1/markets/calendar").Add(new {
+                month = datetime?.Month,
+                year = datetime?.Year
+            });
+
+            var response = await feature.Client.GetAsync(path);
+
+            return await response.Content.ReadAsAsync(x => x.Calendar);
+        }
+
+        internal static Task<SecurityCollection> ReadAsAsync(this HttpContent content, Func<HttpContent, Func<Task<SecurityCollection>>> callback) {
+            return callback(content)();
+        }
         
-        public static Task<SecurityCollection> Securities(this HttpContent content) {
+        internal static Task<SecurityCollection> Securities(this HttpContent content) {
             var formatters = new[] { new TradierMediaTypeFormatter() };
             return content.ReadAsAsync<SecurityCollection>(formatters, cancellationToken: CancellationToken.None);
-        }        
+        }
+
+        internal static Task<string> ReadAsAsync(this HttpContent content, Func<HttpContent, Func<Task<string>>> callback) {
+            return callback(content)();
+        }
+        
+        internal static Task<string> Calendar(this HttpContent content) {
+            return content.ReadAsStringAsync();
+        }  
     }
 }
