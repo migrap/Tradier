@@ -88,6 +88,18 @@ namespace Tradier {
         public string OptionType { get; set; }
         public string RootSymbol { get; set; }
     }
+
+    public class Watchlist {
+        public string Id { get; set; }
+        public string PublicId { get; set; }
+        public string Name { get; set; }
+        public string Symbol { get; set; }
+    }
+
+    public class Watchlists : List<Watchlist> {
+        public Watchlists() {
+        }
+    }
 }
 
 

@@ -9,6 +9,7 @@ namespace Tradier {
     public class TradierClient {
         private readonly IFeatureCollection _features = new FeatureCollection();
         private FeatureReference<IMarketsFeature> _markets = FeatureReference<IMarketsFeature>.Default;
+        private FeatureReference<IWatchlistsFeature> _watchlists = FeatureReference<IWatchlistsFeature>.Default;
 
         internal HttpClient HttpClient { get; } = new HttpClient();
 
@@ -20,6 +21,10 @@ namespace Tradier {
 
         public IMarketsFeature Markets {
             get { return _markets.Fetch(_features) ?? _markets.Update(_features, new MarketsFeature(this)); }
+        }
+
+        public IWatchlistsFeature Watchlists {
+            get { return _watchlists.Fetch(_features) ?? _watchlists.Update(_features, new WatchlistsFeature(this)); }
         }
 
         internal Task<HttpResponseMessage> GetAsync(string requestUri, HttpCompletionOption completionOption, CancellationToken cancellationToken) {

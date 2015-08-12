@@ -16,6 +16,7 @@ namespace Tradier.Net.Http.Formatting {
             SerializerSettings.Converters.Add(new HistoryConverter());
             SerializerSettings.Converters.Add(new ExpirationsConverter());
             SerializerSettings.Converters.Add(new OptionChainConverter());
+            SerializerSettings.Converters.Add(new WatchlistsConverter());
         }
     }
 
@@ -154,6 +155,29 @@ namespace Tradier.Net.Http.Formatting {
             }
 
             return new OptionChain { token.ToObject<Option>() };
+        }
+    }
+
+    public class WatchlistsConverter : Converter<Watchlists> {
+        public WatchlistsConverter() : base("watchlists.watchlist") {
+        }
+
+        protected override object Convert(JToken token, JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
+            var target = (object)null;
+            if(token.Type == JTokenType.Array) {
+                target = new Watchlists();
+            }
+            else {
+                target = new Watchlist();
+            }
+
+            serializer.Populate(token.CreateReader(), target);
+
+            if(target is Watchlist) {
+                target = new Watchlists { (Watchlist)target };
+            }
+
+            return target;
         }
     }
 
