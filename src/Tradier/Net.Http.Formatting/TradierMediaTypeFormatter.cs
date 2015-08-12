@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.Collections.Generic;
 using System.Net.Http.Formatting;
 using System.Reflection;
 
@@ -17,6 +18,7 @@ namespace Tradier.Net.Http.Formatting {
             SerializerSettings.Converters.Add(new ExpirationsConverter());
             SerializerSettings.Converters.Add(new OptionChainConverter());
             SerializerSettings.Converters.Add(new WatchlistsConverter());
+            SerializerSettings.Converters.Add(new WatchlistConverter());
         }
     }
 
@@ -76,7 +78,36 @@ namespace Tradier.Net.Http.Formatting {
                 property.Converter = property.MemberConverter = new EpochDateTimeOffsetConverter();
             }
 
+            if(property.DeclaringType == typeof(Watchlist) && property.PropertyName.Equals("items", StringComparison.OrdinalIgnoreCase)) {
+                property.Converter = property.MemberConverter = new CollectionConverter<Watchlist.Item>("item");
+            }
+
             return property;
+        }
+    }
+
+    internal class CollectionConverter<T> : Converter<T> where T : class, new() {
+        public CollectionConverter(string path) : base(path) {
+
+        }
+
+        protected override object Convert(JToken token, JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
+            var target = (object)null;
+
+            if(token.Type == JTokenType.Array) {
+                target = new List<T>();
+            }
+            else {
+                target = new T();
+            }
+
+            serializer.Populate(token.CreateReader(), target);
+
+            if(target is T) {
+                target = new List<T> { (T)target };
+            }
+
+            return target;
         }
     }
 
@@ -181,6 +212,19 @@ namespace Tradier.Net.Http.Formatting {
         }
     }
 
+    public class WatchlistConverter : Converter<Watchlist> {
+        public WatchlistConverter() : base("watchlist") {
+        }
+
+        protected override object Convert(JToken token, JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
+            var target = new Watchlist();
+
+            serializer.Populate(token?.CreateReader() ?? reader, target);
+
+            return target;
+        }
+    }
+
     public class CalendarConverter : Converter<Calendar> {
         public CalendarConverter() : base("calendar.days.day") {
         }
@@ -203,8 +247,8 @@ namespace Tradier.Net.Http.Formatting {
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
-            var token = JObject.Load(reader)
-                .SelectToken(_path);
+            var jobject = JObject.Load(reader);
+            var token = jobject.SelectToken(_path) ?? jobject;
 
             return Convert(token, reader, objectType, existingValue, serializer);
         }

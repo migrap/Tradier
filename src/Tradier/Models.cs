@@ -94,6 +94,12 @@ namespace Tradier {
         public string PublicId { get; set; }
         public string Name { get; set; }
         public string Symbol { get; set; }
+        public List<Item> Items { get; set; }
+
+        public class Item {
+            public string Symbol { get; set; }
+            public string Id { get; set; }
+        }
     }
 
     public class Watchlists : List<Watchlist> {
