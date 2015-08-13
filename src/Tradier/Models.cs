@@ -93,7 +93,6 @@ namespace Tradier {
         public string Id { get; set; }
         public string PublicId { get; set; }
         public string Name { get; set; }
-        public string Symbol { get; set; }
         public List<Item> Items { get; set; }
 
         public class Item {

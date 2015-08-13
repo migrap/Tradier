@@ -43,14 +43,25 @@ namespace Tradier {
             return await feature.Client.PostAsync<Watchlist>(path, content);
         }
 
-        public static async Task<HttpResponseMessage> DeleteAsync(this IWatchlistsFeature feature, string id) {
+        public static async Task<Watchlist> CreateAsync(this IWatchlistsFeature feature, string name, IEnumerable<string> symbols) {
+            var path = new PathString("/v1/watchlists");
+
+            var content = new Dictionary<string, string> {
+                ["name"] = name,
+                ["symbols"] = symbols.Join(",")
+            };
+
+            return await feature.Client.PostAsync<Watchlist>(path, content);
+        }
+
+        public static async Task<Watchlists> DeleteAsync(this IWatchlistsFeature feature, string id) {
             var path = new PathString("/v1/watchlists")
                 .Add("/" + id);
 
-            return await feature.Client.DeleteAsync(path);
+            return await feature.Client.DeleteAsync<Watchlists>(path);
         }
 
-        public static async Task<string> UpdateAsync(this IWatchlistsFeature feature, string id, IEnumerable<string> symbols) {
+        public static async Task<Watchlist> UpdateAsync(this IWatchlistsFeature feature, string id, IEnumerable<string> symbols) {
             var path = new PathString("/v1/watchlists")
                 .Add("/" + id)
                 .Add("/symbols");
@@ -58,13 +69,8 @@ namespace Tradier {
             var content = new Dictionary<string, string> {
                 ["symbols"] = symbols.Join(",")
             };
-
-            var result = feature.Client.HttpClient.PostAsync(path, new FormUrlEncodedContent(content))
-                .Result;
-
-            return await result.Content.ReadAsStringAsync();
-
-            //return await feature.Client.PostAsync<Watchlist>(path, content);
+            
+            return await feature.Client.PostAsync<Watchlist>(path, content);
         }
     }
 }

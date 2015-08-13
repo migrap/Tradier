@@ -26,13 +26,18 @@ namespace Tradier {
 
         internal static async Task<T> PostAsync<T>(this TradierClient client, string requestUri, IEnumerable<KeyValuePair<string, string>> nameValueCollection) {
             var content = new FormUrlEncodedContent(nameValueCollection);
-
-            var response= await client.HttpClient.PostAsync(requestUri, content);
+            var response = await client.HttpClient.PostAsync(requestUri, content);
             return await response.Content.ReadAsAsync<T>(formatters: new[] { Formatter });
         }
 
         internal static async Task<HttpResponseMessage> DeleteAsync(this TradierClient client, string requestUri) {
             return await client.HttpClient.DeleteAsync(requestUri);
+        }
+
+
+        internal static async Task<T> DeleteAsync<T>(this TradierClient client, string requestUri) {
+            var response = await client.HttpClient.DeleteAsync(requestUri);
+            return await response.Content.ReadAsAsync<T>(formatters: new[] { Formatter });
         }
 
         internal static async Task<T> GetAsync<T>(this TradierClient client, string requestUri, MediaTypeFormatter formatter) {
