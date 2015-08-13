@@ -3,6 +3,7 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Net.Http.Formatting;
 using System.Reflection;
+using Tradier.Net.Http.Formatting.Converters;
 
 namespace Tradier.Net.Http.Formatting {
     internal class TradierCamelCasePropertyNamesContractResolver : JsonContractResolver {

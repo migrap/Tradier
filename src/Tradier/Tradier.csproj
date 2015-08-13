@@ -60,10 +60,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions.cs" />
+    <Compile Include="Features\AccountsFeature.cs" />
+    <Compile Include="Features\AccountsFeatureExtensions.cs" />
+    <Compile Include="Features\IAccountsFeature.cs" />
     <Compile Include="Features\IMarketsFeature.cs" />
+    <Compile Include="Features\IUserFeature.cs" />
     <Compile Include="Features\MarketsFeature.cs" />
     <Compile Include="Features\IWatchlistsFeature.cs" />
     <Compile Include="Features\MarketsFeatureExtensions.cs" />
+    <Compile Include="Features\UserFeature.cs" />
+    <Compile Include="Features\UserFeatureExtensions.cs" />
     <Compile Include="Features\WatchlistsFeature.cs" />
     <Compile Include="Features\WatchlistsFeatureExtensions.cs" />
     <Compile Include="Microsoft.AspNet.Http\FragmentString.cs" />
