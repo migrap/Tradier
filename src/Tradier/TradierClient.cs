@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Migrap.Framework.Features;
+using Tradier.Features;
 
 namespace Tradier {
     public class TradierClient {

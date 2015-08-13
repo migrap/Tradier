@@ -101,9 +101,7 @@ namespace Tradier {
         }
     }
 
-    public class Watchlists : List<Watchlist> {
-        public Watchlists() {
-        }
+    public class WatchlistCollection : List<Watchlist> {        
     }
 }
 

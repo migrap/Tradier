@@ -2,24 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Tradier {
-    public interface IMarketsFeature {
-        TradierClient Client { get; }
-    }
-
-    public interface IMarketsFeatureExtension {
-    }
-
-    public interface IMarketsFeatureLoookupExtension { }
-
-    public class MarketsFeature : IMarketsFeature {
-        public MarketsFeature(TradierClient client) {
-            Client = client;
-        }
-
-        public TradierClient Client { get; }
-    }
-
+namespace Tradier.Features {
     public static partial class MarketsFeatureExtensions {
         public static async Task<SecurityCollection> GetSecuritiesAsync(this IMarketsFeature feature, string value) {
             var path = new PathString("/v1/markets/search").Add(new {
@@ -35,7 +18,7 @@ namespace Tradier {
                 exchanges = exchanges,
                 types = types
             });
-            
+
             return await feature.Client.GetAsync<SecurityCollection>(path);
         }
 
@@ -44,14 +27,14 @@ namespace Tradier {
                 month = datetime?.Month,
                 year = datetime?.Year
             });
-            
+
             return await feature.Client.GetAsync<Calendar>(path);
         }
 
         public static async Task<Clock> GetClockAsync(this IMarketsFeature feature) {
             var path = new PathString("/v1/markets/clock");
 
-            return await feature.Client.GetAsync<Clock>(path);            
+            return await feature.Client.GetAsync<Clock>(path);
         }
 
         public static async Task<History> GetHistoryAsync(this IMarketsFeature feature, string symbol, string interval = "daily", DateTimeOffset? start = null, DateTimeOffset? end = null) {
